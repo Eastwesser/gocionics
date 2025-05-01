@@ -1,40 +1,24 @@
 package usecase
 
-import "gocionics/internal/repositories/user"
+import (
+	charRepo "gocionics/internal/repositories/character"
+	userRepo "gocionics/internal/repositories/user"
+)
 
-type AuthUseCase struct {
-	repo user.IUserRepository
+type UserUseCase struct {
+	userRepo userRepo.IUserRepository
+	charRepo charRepo.ICharacterRepository
 }
 
-func (uc *AuthUseCase) Authenticate(email string, password string) (string, error) {
-	panic("implement me")
+func NewUserUseCase(userRepo userRepo.IUserRepository, charRepo charRepo.ICharacterRepository) *UserUseCase {
+	return &UserUseCase{userRepo, charRepo}
 }
 
-func (uc *AuthUseCase) Register(email string, password string) error {
-	panic("implement me")
-}
+func (uc *UserUseCase) AssignCharacter(userID, characterID int) error {
+	character, err := uc.charRepo.GetByID(characterID)
+	if err != nil {
+		return err
+	}
 
-func (uc *AuthUseCase) Login(email string, password string) error {
-	panic("implement me")
-}
-
-func (uc *AuthUseCase) Logout() error {
-
-	panic("implement me")
-}
-
-func (uc *AuthUseCase) RefreshToken(email string, password string) error {
-	panic("implement me")
-}
-
-func (uc *AuthUseCase) ResetPassword(email string, password string) error {
-	panic("implement me")
-}
-
-func (uc *AuthUseCase) Reset(email string, password string) error {
-	panic("implement me")
-}
-
-func NewUserUseCase() {
-
+	return character, uc.userRepo.AssignCharacter(userID, characterID)
 }

@@ -47,3 +47,11 @@ In main.go we connect all our layers
 
 ## Step 7: Added Readmes for all folders to show what's there
 
+## Step 8: After working with entities -> repos:
+We code a constructor for our usecases
+
+## Step 9: We realise the usecases
+Set registration + set character
+
+## Step 10: Handlers
+Write code logic for methods and CRUDs
