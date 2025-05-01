@@ -1,7 +1,9 @@
 package user
 
 type User struct {
-	ID       int
-	Email    string
-	Password string
+	ID          int
+	Name        string
+	Email       string
+	Password    string
+	CharacterID int // ссылка на Character
 }
