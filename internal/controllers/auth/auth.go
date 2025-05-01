@@ -1,12 +1,46 @@
 package auth
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
+	"gocionics/internal/usecases/auth"
+	"net/http"
 )
 
 type Controller struct {
-	authUC AuthUseCase
+	authUC *auth.AuthUseCase
+}
+
+func NewAuthController(authUC *auth.AuthUseCase) *Controller {
+	return &Controller{authUC: authUC}
+}
+
+type RegisterRequest struct {
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required,min=8"`
+}
+
+type LoginRequest struct {
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required,min=8"`
+}
+
+func (c *Controller) Register(ctx *gin.Context) {
+	var req RegisterRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	user, err := c.authUC.Register(req.Email, req.Password)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusCreated, gin.H{
+		"id":    user.ID,
+		"email": user.Email,
+	})
 }
 
 // @Summary User login
@@ -19,12 +53,25 @@ type Controller struct {
 // @Failure 400 {object} ErrorResponse
 // @Router /auth/login [post]
 func (c *Controller) Login(ctx *gin.Context) {
-	password := ctx.PostForm("password")
-	fmt.Println(password) // XDDD
+	var req LoginRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	user, err := c.authUC.Login(req.Email, req.Password)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "invalid credentials"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"id":    user.ID,
+		"email": user.Email,
+	})
 }
 
-// SetupRoutes registers auth routes
 func SetupRoutes(r *gin.RouterGroup, c *Controller) {
-	r.POST("/auth/login", c.Login)
-	// Add other auth routes
+	r.POST("/register", c.Register)
+	r.POST("/login", c.Login)
 }

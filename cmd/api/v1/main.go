@@ -10,15 +10,16 @@ import (
 	"fmt"
 	"gocionics/config"
 	"gocionics/internal/app"
-	"gocionics/internal/controllers/auth"
-	"gocionics/internal/controllers/character"
-	"gocionics/internal/controllers/user"
+	authcontroller "gocionics/internal/controllers/auth"
+	charactercontroller "gocionics/internal/controllers/character"
+	usercontroller "gocionics/internal/controllers/user"
 	"gocionics/internal/db"
-	"gocionics/internal/repositories/character"
-	"gocionics/internal/repositories/user"
+	characterrepo "gocionics/internal/repositories/character"
+	userrepo "gocionics/internal/repositories/user"
 	"gocionics/internal/server"
-	"gocionics/internal/usecases/auth"
-	"gocionics/internal/usecases/character"
+	authusecase "gocionics/internal/usecases/auth"
+	characterusecase "gocionics/internal/usecases/character"
+	userusecase "gocionics/internal/usecases/user"
 	"golang.org/x/sync/errgroup"
 	"log"
 	"os"
@@ -37,20 +38,21 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
+	defer pgDB.Close()
 
 	// Initialize repositories
-	userRepo := user_repo.NewUserRepository(pgDB)
-	charRepo := character_repo.NewCharacterRepository(pgDB)
+	userRepo := userrepo.NewPostgresRepository(pgDB)
+	charRepo := characterrepo.NewPostgresRepository(pgDB)
 
 	// Initialize use cases
-	authUC := auth_usecase.NewAuthUseCase(userRepo)
-	userUC := user_usecase.NewUserUseCase(userRepo, charRepo)
-	charUC := character_usecase.NewCharacterUseCase(charRepo)
+	authUC := authusecase.NewAuthUseCase(userRepo)
+	userUC := userusecase.NewUserUseCase(userRepo, charRepo)
+	charUC := characterusecase.NewCharacterUseCase(charRepo)
 
 	// Initialize controllers
-	authController := auth_controller.NewAuthController(authUC)
-	userController := user_controller.NewUserController(userUC)
-	charController := character_controller.NewCharacterController(charUC)
+	authController := authcontroller.NewAuthController(authUC)
+	userController := usercontroller.NewUserController(userUC)
+	charController := charactercontroller.NewCharacterController(charUC)
 
 	// Setup router
 	router := server.NewRouter()

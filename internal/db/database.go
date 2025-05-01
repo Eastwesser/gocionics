@@ -2,22 +2,31 @@ package db
 
 import (
 	"database/sql"
-	"gocionics/internal/entities/user"
+	"fmt"
+	_ "github.com/lib/pq"
+	"gocionics/config"
 )
 
-type UserRepo struct {
-	db *sql.DB
+type PostgresDB struct {
+	DB *sql.DB
 }
 
-func (r *UserRepo) Init() {
-	//...
+func NewPostgresDB(cfg *config.Config) (*PostgresDB, error) {
+	connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+		cfg.DB_host, cfg.DB_port, cfg.DB_user, cfg.DB_password, cfg.DB_name)
+
+	db, err := sql.Open("postgres", connStr)
+	if err != nil {
+		return nil, err
+	}
+
+	if err = db.Ping(); err != nil {
+		return nil, err
+	}
+
+	return &PostgresDB{DB: db}, nil
 }
 
-func (r *UserRepo) Close() {
-	// ...
-}
-
-func (r *UserRepo) Create(user *user.User) error {
-	_, err := r.db.Exec("INSERT INTO users...")
-	return err
+func (p *PostgresDB) Close() error {
+	return p.DB.Close()
 }

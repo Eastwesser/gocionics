@@ -2,62 +2,74 @@ package character
 
 import (
 	"database/sql"
+	"errors"
 	"gocionics/internal/entities/character"
+	"strings"
 )
 
-type ICharacterRepository interface {
-	GetByID(id int) (*character.Character, error)
-	ListAll() (*[]character.Character, error)
-}
-
-type CharacterRepo struct {
+type PostgresRepository struct {
 	db *sql.DB
 }
 
-func NewCharacterRepo(db *sql.DB) *CharacterRepo {
-	return &CharacterRepo{db: db}
+func NewPostgresRepository(db *sql.DB) *PostgresRepository {
+	return &PostgresRepository{db: db}
 }
 
-func (r *CharacterRepo) GetByID(id int) (*character.Character, error) {
-	panic("implement me")
+func (r *PostgresRepository) GetByID(id int) (*character.Character, error) {
+	query := `
+		SELECT id, type, description, traits 
+		FROM characters 
+		WHERE id = $1`
+
+	var c character.Character
+	var traitsStr string
+
+	err := r.db.QueryRow(query, id).Scan(
+		&c.ID,
+		&c.Type,
+		&c.Description,
+		&traitsStr,
+	)
+
+	if errors.Is(err, sql.ErrNoRows) {
+		return nil, errors.New("character not found")
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	c.Traits = strings.Split(traitsStr, ",")
+	return &c, nil
 }
 
-func (r *CharacterRepo) ListAll() (*[]character.Character, error) {
-	panic("implement me")
-}
+func (r *PostgresRepository) ListAll() ([]*character.Character, error) {
+	query := `
+		SELECT id, type, description, traits 
+		FROM characters`
 
-func (r *CharacterRepo) Save(character *character.Character) error {
-	panic("implement me")
-}
-
-func (r *CharacterRepo) Delete(id int) error {
-	panic("implement me")
-}
-
-func (r *CharacterRepo) Close() error {
-	panic("implement me")
-}
-
-func (r *CharacterRepo) Connect() error {
-	panic("implement me")
-}
-
-func (r *CharacterRepo) Disconnect() {
-	panic("implement me")
-}
-
-func (r *CharacterRepo) Query(query string, args ...interface{}) (*[]character.Character, error) {
-	rows, err := r.db.Query(query, args...)
+	rows, err := r.db.Query(query)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var characters []character.Character
+
+	var characters []*character.Character
 	for rows.Next() {
-		var char character.Character
-		if characters = append(characters, char); err != nil {
+		var c character.Character
+		var traitsStr string
+
+		if err := rows.Scan(
+			&c.ID,
+			&c.Type,
+			&c.Description,
+			&traitsStr,
+		); err != nil {
 			return nil, err
 		}
+
+		c.Traits = strings.Split(traitsStr, ",")
+		characters = append(characters, &c)
 	}
-	return &characters, nil
+
+	return characters, nil
 }

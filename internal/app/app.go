@@ -1,8 +1,11 @@
 package app
 
 import (
+	"github.com/gin-gonic/gin"
+	"github.com/pressly/goose"
 	"go.uber.org/zap"
 	"gocionics/config"
+	"gocionics/internal/db"
 	"gocionics/internal/server"
 	"log"
 )
@@ -12,21 +15,13 @@ type App struct {
 	Server *server.Server
 }
 
-func New() *App {
-	cfg := config.NewConfig()
-
+func New(cfg *config.Config, router *gin.Engine) *App {
 	logger, err := zap.NewProduction()
 	if err != nil {
 		log.Fatalf("failed to initialize logger: %v", err)
 	}
 
-	pgDB, err := db.NewPostgresDB(
-		cfg.DB_host,
-		cfg.DB_port,
-		cfg.DB_user,
-		cfg.DB_password,
-		cfg.DB_name,
-	)
+	pgDB, err := db.NewPostgresDB(cfg)
 	if err != nil {
 		logger.Fatal("failed to connect to database", zap.Error(err))
 	}

@@ -147,3 +147,29 @@ To create first files for migrations use:
 ```bash
 goose -dir internal/db/migrations create add_users_table sql
 ```
+
+## Swagger
+We use swaggo in this project
+
+Type to generate docs:
+```bash
+swag init -g cmd/api/v1/main.go
+```
+
+## Docker
+
+Use this command to run server:
+```bash
+docker-compose up --build
+```
+
+Also check migrations:
+```bash
+docker-compose exec app goose -dir ./migrations postgres "user=postgres password=postgres dbname=library host=db port=5432 sslmode=disable" status
+```
+
+## Final steps
+
+Open your browser and enter **http://localhost:8080/swagger/index.html**
+
+This is your documentation, congratulations!
