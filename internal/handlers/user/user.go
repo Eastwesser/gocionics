@@ -1,6 +1,7 @@
 package user
 
 import (
+	"github.com/gin-gonic/gin"
 	usecase "gocionics/internal/usecases/user"
 	"net/http"
 )
@@ -14,28 +15,34 @@ func NewUserHandler(userUC *usecase.UserUseCase) *UserHandler {
 }
 
 func (h *UserHandler) AssignCharacter(c *gin.Context) {
-
+	userID := c.Param("id")
+	characterID := c.Param("characterID")
+	err := h.userUC.AssignCharacter(userID, characterID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 }
 
-func (handler *UserHandler) GetAllUsers(w http.ResponseWriter, r *http.Request) {
+func (h *UserHandler) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	panic("implement me")
 }
 
-func (handler *UserHandler) GetUserById(w http.ResponseWriter, r *http.Request) {
+func (h *UserHandler) GetUserById(w http.ResponseWriter, r *http.Request) {
 	panic("implement me")
 
 }
 
-func (handler *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
+func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	panic("implement me")
 }
 
-func (handler *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
+func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 	panic("implement me")
 }
 
-func (handler *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
+func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	// soft delete
 	panic("implement me")
 }

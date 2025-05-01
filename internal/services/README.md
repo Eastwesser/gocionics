@@ -1,1 +1,1 @@
-Here we have the additional logic
+Here we have the additional logic for analyzing user's type

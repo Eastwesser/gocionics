@@ -1,1 +1,42 @@
 package app
+
+import (
+	"go.uber.org/zap"
+	"gocionics/config"
+	"gocionics/internal/server"
+	"log"
+)
+
+type App struct {
+	Config *config.Config
+	Server *server.Server
+}
+
+func New() *App {
+	cfg := config.NewConfig()
+
+	logger, err := zap.NewProduction()
+	if err != nil {
+		log.Fatalf("failed to initialize logger: %v", err)
+	}
+
+	pgDB, err := db.NewPostgresDB(
+		cfg.DB_host,
+		cfg.DB_port,
+		cfg.DB_user,
+		cfg.DB_password,
+		cfg.DB_name,
+	)
+	if err != nil {
+		logger.Fatal("failed to connect to database", zap.Error(err))
+	}
+
+	if err := goose.Up(pgDB.DB, migrations.MigrationsDir); err != nil {
+		logger.Fatal("failed to apply migrations", zap.Error(err))
+	}
+
+	return &App{
+		Config: cfg,
+		Server: server.New(":"+cfg.Port, router),
+	}
+}

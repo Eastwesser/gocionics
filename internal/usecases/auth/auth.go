@@ -1,4 +1,4 @@
-package usecases
+package auth
 
 import (
 	"gocionics/internal/repositories/user"

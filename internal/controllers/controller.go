@@ -1,9 +1,11 @@
 package controllers
 
-import "gocionics/internal/usecases"
+import (
+	"gocionics/internal/usecases/auth"
+)
 
 type AuthController struct {
-	authUC usecases.AuthUseCase
+	authUC auth.AuthUseCase
 }
 
 func (c *AuthController) Login(username, password string) (string, error) {
@@ -13,6 +15,6 @@ func (c *AuthController) Logout() error {
 	panic("implement me")
 }
 
-func NewAuthController(authUC usecases.AuthUseCase) *AuthController {
+func NewAuthController(authUC auth.AuthUseCase) *AuthController {
 	return &AuthController{authUC: authUC}
 }
