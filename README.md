@@ -3,6 +3,65 @@
 This is a simple app to show you what type of character you are!
 We are using Golang and PostgreSQL.
 
+## Project structure
+
+```bash
+gocionics/
+├── cmd/
+│   └── api/
+│       └── v1/
+│           └── main.go          # Точка входа + Swagger
+├── config/
+│   └── config.go               # Конфигурация (.env)
+├── internal/
+│   ├── app/                    # Инициализация приложения
+│   │   └── app.go
+│   ├── controllers/            # HTTP-контроллеры (Gin)
+│   │   ├── auth/
+│   │   │   └── auth.go
+│   │   ├── user/
+│   │   │   └── user.go
+│   │   └── character/
+│   │       └── character.go
+│   ├── db/                     # Работа с БД
+│   │   ├── database.go         # Подключение PostgreSQL
+│   │   ├── migrations/         # Миграции Goose
+│   │   └── sql.go              # SQL-запросы
+│   ├── entities/               # Сущности
+│   │   ├── user/
+│   │   │   └── user.go
+│   │   └── character/
+│   │       └── character.go
+│   ├── handlers/               # HTTP-обработчики (альтернатива контроллерам)
+│   │   ├── user/
+│   │   │   └── user.go
+│   │   └── character/
+│   │       └── character.go
+│   ├── repositories/           # Репозитории (БД)
+│   │   ├── user/
+│   │   │   └── user.go
+│   │   └── character/
+│   │       └── character.go
+│   ├── server/                 # HTTP-сервер
+│   │   └── server.go
+│   ├── services/               # Доп. сервисы (анализ теста)
+│   │   └── test-analyzer.go
+│   └── usecases/               # Бизнес-логика
+│       ├── auth/
+│       │   └── auth.go
+│       ├── user/
+│       │   └── user.go
+│       └── character/
+│           └── character.go
+├── pkg/                        # Внешние утилиты
+│   └── httpclient/             # HTTP-клиент с таймаутами
+│       └── client.go
+└── docs/                       # Swagger
+    └── swagger/
+        └── docs.go
+```
+
+
 To create folders:
 
 ```bash
