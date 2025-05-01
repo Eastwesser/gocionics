@@ -11,7 +11,7 @@ To create folders:
 
 To create multiple **embedded** folders:
 ```bash
-    "entity", "usecase", "repository", "handler", "service", "app" | ForEach-Object { md -Force "internal/$_" }
+    "entity", "usecases", "repositories", "handlers", "services", "app" | ForEach-Object { md -Force "internal/$_" }
 ```
 
 To create a file:
@@ -28,4 +28,22 @@ Create there 2 files, **user.go** and **character.go**, and put there your struc
 - What is an "entity" in this project?
 
 - What are the "DTOs" of this project?
+
+## Step 2: Create Use Case
+We create a User structure and methods with panic("implement me")
+
+## Step 3: Create Repository
+Here we create exact interface to work with our User structure. 
+So the structure does exactly the thing it's asked for, realising the interface.
+
+## Step 4: Create a Controller
+Create a controller for auth.
+
+## Step 5: Database realisation
+In database.go create your db implementation
+
+## Step 6: Connect all layers
+In main.go we connect all our layers 
+
+## Step 7: Added Readmes for all folders to show what's there
 
