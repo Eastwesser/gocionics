@@ -2,15 +2,17 @@ package auth
 
 import (
 	"gocionics/internal/repositories/user"
-	usecase "gocionics/internal/usecases/user"
 )
 
 type AuthUseCase struct {
-	repo   user.IUserRepository
-	authUC usecase.AuthUseCase
+	userRepo user.IUserRepository
 }
 
-func (uc *AuthUseCase) Authenticate(email string, password string) (string, error) {
+func NewAuthUseCase(userRepo user.IUserRepository) *AuthUseCase {
+	return &AuthUseCase{userRepo: userRepo}
+}
+
+func (uc *AuthUseCase) Authenticate(email, password string) (string, error) {
 	panic("implement me")
 }
 
@@ -37,8 +39,4 @@ func (uc *AuthUseCase) ResetPassword(email string, password string) error {
 
 func (uc *AuthUseCase) Reset(email string, password string) error {
 	panic("implement me")
-}
-
-func NewAuthUseCase(authUC usecase.AuthUseCase) *AuthUseCase {
-	return &AuthUseCase{authUC: authUC}
 }

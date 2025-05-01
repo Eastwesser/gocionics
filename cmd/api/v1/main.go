@@ -2,7 +2,7 @@
 // @version 1.0
 // @description This is a Socionics task using Golang
 // @host localhost:8080
-// @BasePath /api
+// @BasePath /api/v1
 package main
 
 import (

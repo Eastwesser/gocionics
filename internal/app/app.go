@@ -31,7 +31,7 @@ func New() *App {
 		logger.Fatal("failed to connect to database", zap.Error(err))
 	}
 
-	if err := goose.Up(pgDB.DB, migrations.MigrationsDir); err != nil {
+	if err := goose.Up(pgDB.DB, "internal/db/migrations"); err != nil {
 		logger.Fatal("failed to apply migrations", zap.Error(err))
 	}
 

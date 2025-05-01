@@ -1,7 +1,7 @@
 # Socionics app using Golang
 
 This is a simple app to show you what type of character you are!
-We are using Golang and PostgreSQL.
+We are using Golang and PostgreSQL to build a RESTful API.
 
 ## Project structure
 
@@ -114,3 +114,36 @@ Set registration + set character
 
 ## Step 10: Handlers
 Write code logic for methods and CRUDs
+
+### TIPS:
+
+✅ Clean Architecture:
+
+    Entities → Use Cases → Repositories → Controllers.
+
+Outer layers (DB, HTTP) depend on inner layers.
+
+✅ Additional Components:
+
+    HTTP client with timeouts.
+    
+    Swagger for documentation.
+    
+    Goose for migrations.
+
+✅ Ready Use Cases:
+
+    Authentication (auth).
+    
+    Working with socionic types (character).
+
+## SQL Migrations
+We are using **goose** for db migrations:
+```bash
+go install github.com/pressly/goose/v3/cmd/goose@latest
+```
+
+To create first files for migrations use:
+```bash
+goose -dir internal/db/migrations create add_users_table sql
+```
