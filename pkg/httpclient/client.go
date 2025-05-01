@@ -20,3 +20,9 @@ func New(timeout time.Duration) *HttpClient {
 func (c *HttpClient) Do(req *http.Request) (*http.Response, error) {
 	return c.client.Do(req)
 }
+
+/*
+client := httpclient.New(10 * time.Second)
+req, _ := http.NewRequest("GET", "https://api.com", nil)
+resp, err := client.Do(req)
+*/
