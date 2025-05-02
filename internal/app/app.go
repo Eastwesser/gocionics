@@ -49,7 +49,7 @@ func New(cfg *config.Config, router *gin.Engine) *App {
 	userRepo := userrepo.NewPostgresRepository(pgDB.DB)
 	charRepo := characterrepo.NewPostgresRepository(pgDB.DB)
 
-	authUC := authusecase.NewAuthUseCase(userRepo)
+	authUC := authusecase.NewAuthUseCase(userRepo, "uzumumw")
 	userUC := userusecase.NewUserUseCase(userRepo, charRepo)
 	charUC := characterusecase.NewCharacterUseCase(charRepo)
 

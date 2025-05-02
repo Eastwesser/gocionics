@@ -27,7 +27,13 @@ func NewUserController(userUC *user.UserUseCase) *Controller {
 // @Failure 400 {object} entities.ErrorResponse
 // @Router /users/{id}/characters/{character_id} [post]
 func (c *Controller) AssignCharacter(ctx *gin.Context) {
-	userID := ctx.Param("id")
+	// Конвертируем оба параметра в int
+	userID, err := strconv.Atoi(ctx.Param("id"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, entities.ErrorResponse{Error: "invalid user ID"})
+		return
+	}
+
 	characterID, err := strconv.Atoi(ctx.Param("character_id"))
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, entities.ErrorResponse{Error: "invalid character ID"})

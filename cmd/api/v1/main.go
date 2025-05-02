@@ -26,13 +26,13 @@ const shutdownTimeout = 5 * time.Second
 func main() {
 	cfg := config.NewConfig()
 	router := server.NewRouter()
-	app := app.New(cfg, router)
+	appL := app.New(cfg, router)
 	errGroup, ctx := errgroup.WithContext(context.Background())
 
 	// Server goroutine
 	errGroup.Go(func() error {
 		log.Printf("Starting server on :%s", cfg.Port)
-		if err := app.Server.Serve(); err != nil {
+		if err := appL.Server.Serve(); err != nil {
 			return fmt.Errorf("server error: %w", err)
 		}
 		return nil
@@ -62,7 +62,7 @@ func main() {
 		defer cancel()
 
 		log.Println("Shutting down server...")
-		return app.Server.Stop(shutdownCtx)
+		return appL.Server.Stop(shutdownCtx)
 	})
 
 	if err := errGroup.Wait(); err != nil {

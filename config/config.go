@@ -30,7 +30,7 @@ func NewConfig() *Config {
 		DbName:     getEnv("DB_NAME", "postgres"),
 		DbPort:     getEnv("DB_PORT", "5432"),
 		DbHost:     getEnv("DB_HOST", "db"),
-		JWTSecret:  getEnv("JWT_SECRET", "default-very-strong-secret"),
+		JWTSecret:  getEnv("JWT_SECRET", "uzumumw"),
 	}
 }
 

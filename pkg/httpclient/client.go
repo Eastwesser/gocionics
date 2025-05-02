@@ -23,6 +23,6 @@ func (c *HttpClient) Do(req *http.Request) (*http.Response, error) {
 
 /*
 client := httpclient.New(10 * time.Second)
-req, _ := http.NewRequest("GET", "https://api.com", nil)
+req, _ := http.NewRequest("GET", "https://www.sociotype.com/tests", nil)
 resp, err := client.Do(req)
 */

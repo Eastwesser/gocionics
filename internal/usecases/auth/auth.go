@@ -8,15 +8,15 @@ import (
 	"golang.org/x/crypto/bcrypt"
 
 	"gocionics/internal/entities"
-	user_repo "gocionics/internal/repositories/user"
+	userrepo "gocionics/internal/repositories/user"
 )
 
 type AuthUseCase struct {
-	userRepo  user_repo.IUserRepository
+	userRepo  userrepo.IUserRepository
 	secretKey string
 }
 
-func NewAuthUseCase(userRepo user_repo.IUserRepository, secretKey string) *AuthUseCase {
+func NewAuthUseCase(userRepo userrepo.IUserRepository, secretKey string) *AuthUseCase {
 	return &AuthUseCase{
 		userRepo:  userRepo,
 		secretKey: secretKey,
