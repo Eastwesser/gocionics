@@ -1,6 +1,29 @@
 basePath: /api/v1
 definitions:
-  gocionics_internal_entities.Character:
+  auth.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  auth.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        minLength: 8
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  auth.LoginResponse:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+    type: object
+  entities.Character:
     description: Socionics character type with traits and description
     properties:
       description:
@@ -21,41 +44,18 @@ definitions:
         example: Дон Кихот
         type: string
     type: object
-  gocionics_internal_entities.ErrorResponse:
+  entities.ErrorResponse:
     description: Standard error response format
     properties:
       error:
         example: error message
         type: string
     type: object
-  gocionics_internal_entities.SuccessResponse:
+  entities.SuccessResponse:
     description: Standard success response format
     properties:
       status:
         example: success
-        type: string
-    type: object
-  internal_controllers_auth.ErrorResponse:
-    properties:
-      error:
-        type: string
-    type: object
-  internal_controllers_auth.LoginRequest:
-    properties:
-      email:
-        type: string
-      password:
-        minLength: 8
-        type: string
-    required:
-    - email
-    - password
-    type: object
-  internal_controllers_auth.LoginResponse:
-    properties:
-      email:
-        type: string
-      id:
         type: string
     type: object
 host: localhost:8080
@@ -76,24 +76,24 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/internal_controllers_auth.LoginRequest'
+          $ref: '#/definitions/auth.LoginRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/internal_controllers_auth.LoginResponse'
+            $ref: '#/definitions/auth.LoginResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/internal_controllers_auth.ErrorResponse'
+            $ref: '#/definitions/auth.ErrorResponse'
       summary: User login
       tags:
       - auth
   /characters:
     get:
-      description: Get list of all characters
+      description: Get list of all available character types
       produces:
       - application/json
       responses:
@@ -101,12 +101,12 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/gocionics_internal_entities.Character'
+              $ref: '#/definitions/entities.Character'
             type: array
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/gocionics_internal_entities.ErrorResponse'
+            $ref: '#/definitions/entities.ErrorResponse'
       summary: Get all characters
       tags:
       - character
@@ -125,15 +125,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/gocionics_internal_entities.Character'
+            $ref: '#/definitions/entities.Character'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/gocionics_internal_entities.ErrorResponse'
+            $ref: '#/definitions/entities.ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/gocionics_internal_entities.ErrorResponse'
+            $ref: '#/definitions/entities.ErrorResponse'
       summary: Get character by ID
       tags:
       - character
@@ -147,7 +147,7 @@ paths:
         in: path
         name: id
         required: true
-        type: string
+        type: integer
       - description: Character ID
         in: path
         name: character_id
@@ -159,11 +159,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/gocionics_internal_entities.SuccessResponse'
+            $ref: '#/definitions/entities.SuccessResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/gocionics_internal_entities.ErrorResponse'
+            $ref: '#/definitions/entities.ErrorResponse'
       summary: Assign character to user
       tags:
       - user

@@ -29,7 +29,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/internal_controllers_auth.LoginRequest"
+                            "$ref": "#/definitions/auth.LoginRequest"
                         }
                     }
                 ],
@@ -37,13 +37,13 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_controllers_auth.LoginResponse"
+                            "$ref": "#/definitions/auth.LoginResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/internal_controllers_auth.ErrorResponse"
+                            "$ref": "#/definitions/auth.ErrorResponse"
                         }
                     }
                 }
@@ -51,7 +51,7 @@
         },
         "/characters": {
             "get": {
-                "description": "Get list of all characters",
+                "description": "Get list of all available character types",
                 "produces": [
                     "application/json"
                 ],
@@ -65,14 +65,14 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/gocionics_internal_entities.Character"
+                                "$ref": "#/definitions/entities.Character"
                             }
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/gocionics_internal_entities.ErrorResponse"
+                            "$ref": "#/definitions/entities.ErrorResponse"
                         }
                     }
                 }
@@ -101,19 +101,19 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/gocionics_internal_entities.Character"
+                            "$ref": "#/definitions/entities.Character"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/gocionics_internal_entities.ErrorResponse"
+                            "$ref": "#/definitions/entities.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/gocionics_internal_entities.ErrorResponse"
+                            "$ref": "#/definitions/entities.ErrorResponse"
                         }
                     }
                 }
@@ -134,7 +134,7 @@
                 "summary": "Assign character to user",
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "User ID",
                         "name": "id",
                         "in": "path",
@@ -152,13 +152,13 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/gocionics_internal_entities.SuccessResponse"
+                            "$ref": "#/definitions/entities.SuccessResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/gocionics_internal_entities.ErrorResponse"
+                            "$ref": "#/definitions/entities.ErrorResponse"
                         }
                     }
                 }
@@ -166,7 +166,42 @@
         }
     },
     "definitions": {
-        "gocionics_internal_entities.Character": {
+        "auth.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "auth.LoginRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 8
+                }
+            }
+        },
+        "auth.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "entities.Character": {
             "description": "Socionics character type with traits and description",
             "type": "object",
             "properties": {
@@ -195,7 +230,7 @@
                 }
             }
         },
-        "gocionics_internal_entities.ErrorResponse": {
+        "entities.ErrorResponse": {
             "description": "Standard error response format",
             "type": "object",
             "properties": {
@@ -205,48 +240,13 @@
                 }
             }
         },
-        "gocionics_internal_entities.SuccessResponse": {
+        "entities.SuccessResponse": {
             "description": "Standard success response format",
             "type": "object",
             "properties": {
                 "status": {
                     "type": "string",
                     "example": "success"
-                }
-            }
-        },
-        "internal_controllers_auth.ErrorResponse": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string"
-                }
-            }
-        },
-        "internal_controllers_auth.LoginRequest": {
-            "type": "object",
-            "required": [
-                "email",
-                "password"
-            ],
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string",
-                    "minLength": 8
-                }
-            }
-        },
-        "internal_controllers_auth.LoginResponse": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
                 }
             }
         }

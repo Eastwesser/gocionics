@@ -4,13 +4,14 @@
 // @host localhost:8080
 // @BasePath /api/v1
 //
-//go:generate swag init -g cmd/api/v1/main.go --output docs/swagger
+//go:generate swag init -g cmd/api/v1/main.go --output ../../docs/swagger --parseDependency --parseInternal
 package main
 
 import (
 	"context"
 	"fmt"
 	"gocionics/config"
+	_ "gocionics/docs/swagger"
 	"gocionics/internal/app"
 	"gocionics/internal/server"
 	"golang.org/x/sync/errgroup"
@@ -21,11 +22,11 @@ import (
 	"time"
 )
 
-const shutdownTimeout = 5 * time.Second
-
 func main() {
 	cfg := config.NewConfig()
+	// Создаем роутер с Swagger
 	router := server.NewRouter()
+	// Инициализируем приложение
 	appL := app.New(cfg, router)
 	errGroup, ctx := errgroup.WithContext(context.Background())
 
@@ -57,7 +58,7 @@ func main() {
 
 		shutdownCtx, cancel := context.WithTimeout(
 			context.Background(),
-			shutdownTimeout,
+			5*time.Second,
 		)
 		defer cancel()
 

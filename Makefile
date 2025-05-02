@@ -5,6 +5,8 @@ MIGRATIONS_DIR=./internal/db/migrations
 .PHONY: build run test lint migrate-up migrate-down
 
 build:
+	@echo "Generating Swagger docs..."
+	@swag init -g cmd/api/v1/main.go --output docs/swagger
 	@echo "Building binary..."
 	@CGO_ENABLED=0 GOOS=linux go build -o ${BINARY_NAME} ./cmd/api/v1
 

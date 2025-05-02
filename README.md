@@ -188,9 +188,8 @@ docker-compose exec app goose -dir ./migrations postgres "user=postgres password
 ```
 
 ## Makefiles
-
-```
 Как использовать Makefile?
+```
 Основные команды:
 Команда	Действие
 make build	Собирает бинарник (gocionics)
