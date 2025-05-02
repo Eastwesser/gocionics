@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"gocionics/config"
+	"time"
 )
 
 type PostgresDB struct {
@@ -29,6 +30,11 @@ func NewPostgresDB(cfg *config.Config) (*PostgresDB, error) {
 	if err = db.Ping(); err != nil {
 		return nil, err
 	}
+
+	// Логгирование
+	db.SetConnMaxLifetime(time.Minute * 3)
+	db.SetMaxOpenConns(10)
+	db.SetMaxIdleConns(10)
 
 	return &PostgresDB{DB: db}, nil
 }
