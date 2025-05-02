@@ -18,6 +18,7 @@ type Config struct {
 }
 
 func NewConfig() *Config {
+
 	err := godotenv.Load()
 	if err != nil {
 		log.Println("Warning: No .env file found")
@@ -35,8 +36,10 @@ func NewConfig() *Config {
 }
 
 func getEnv(key, defaultValue string) string {
+
 	if value, exists := os.LookupEnv(key); exists {
 		return value
 	}
+
 	return defaultValue
 }
