@@ -3,16 +3,16 @@ package user
 import (
 	"errors"
 	"gocionics/internal/entities"
-	char_repo "gocionics/internal/repositories/character"
-	user_repo "gocionics/internal/repositories/user"
+	charrepo "gocionics/internal/repositories/character"
+	userrepo "gocionics/internal/repositories/user"
 )
 
 type UserUseCase struct {
-	userRepo user_repo.IUserRepository
-	charRepo char_repo.ICharacterRepository
+	userRepo userrepo.IUserRepository
+	charRepo charrepo.ICharacterRepository
 }
 
-func NewUserUseCase(userRepo user_repo.IUserRepository, charRepo char_repo.ICharacterRepository) *UserUseCase {
+func NewUserUseCase(userRepo userrepo.IUserRepository, charRepo charrepo.ICharacterRepository) *UserUseCase {
 	return &UserUseCase{
 		userRepo: userRepo,
 		charRepo: charRepo,

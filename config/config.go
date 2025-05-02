@@ -14,10 +14,10 @@ type Config struct {
 	DbName     string
 	DbPort     string
 	DbHost     string
+	JWTSecret  string
 }
 
 func NewConfig() *Config {
-
 	err := godotenv.Load()
 	if err != nil {
 		log.Println("Warning: No .env file found")
@@ -30,8 +30,8 @@ func NewConfig() *Config {
 		DbName:     getEnv("DB_NAME", "postgres"),
 		DbPort:     getEnv("DB_PORT", "5432"),
 		DbHost:     getEnv("DB_HOST", "db"),
+		JWTSecret:  getEnv("JWT_SECRET", "default-very-strong-secret"),
 	}
-
 }
 
 func getEnv(key, defaultValue string) string {

@@ -5,7 +5,6 @@ import (
 	"errors"
 	"github.com/lib/pq"
 	"gocionics/internal/entities"
-	"strings"
 )
 
 type ICharacterRepository interface {
@@ -44,9 +43,8 @@ func (r *PostgresRepository) GetByID(id int) (*entities.Character, error) {
 }
 
 func (r *PostgresRepository) ListAll() ([]*entities.Character, error) {
-	query := `
-		SELECT id, type, description, traits 
-		FROM characters`
+
+	query := `SELECT id, type, description, traits FROM characters`
 
 	rows, err := r.db.Query(query)
 	if err != nil {
@@ -57,18 +55,14 @@ func (r *PostgresRepository) ListAll() ([]*entities.Character, error) {
 	var characters []*entities.Character
 	for rows.Next() {
 		var c entities.Character
-		var traitsStr string
-
 		if err := rows.Scan(
 			&c.ID,
 			&c.Type,
 			&c.Description,
-			&traitsStr,
+			pq.Array(&c.Traits),
 		); err != nil {
 			return nil, err
 		}
-
-		c.Traits = strings.Split(traitsStr, ",")
 		characters = append(characters, &c)
 	}
 

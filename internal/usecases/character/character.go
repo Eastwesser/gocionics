@@ -3,14 +3,14 @@ package character
 import (
 	"errors"
 	"gocionics/internal/entities"
-	char_repo "gocionics/internal/repositories/character"
+	charrepo "gocionics/internal/repositories/character"
 )
 
 type CharacterUseCase struct {
-	repo char_repo.ICharacterRepository
+	repo charrepo.ICharacterRepository
 }
 
-func NewCharacterUseCase(repo char_repo.ICharacterRepository) *CharacterUseCase {
+func NewCharacterUseCase(repo charrepo.ICharacterRepository) *CharacterUseCase {
 	return &CharacterUseCase{repo: repo}
 }
 

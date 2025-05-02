@@ -21,7 +21,7 @@ type LoginRequest struct {
 }
 
 type LoginResponse struct {
-	ID    string `json:"id"`
+	ID    int    `json:"id"`
 	Email string `json:"email"`
 }
 
@@ -74,9 +74,16 @@ func (c *Controller) Login(ctx *gin.Context) {
 		return
 	}
 
+	token, err := c.authUC.GenerateToken(user)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "failed to generate token"})
+		return
+	}
+
 	ctx.JSON(http.StatusOK, gin.H{
 		"id":    user.ID,
 		"email": user.Email,
+		"token": token,
 	})
 }
 

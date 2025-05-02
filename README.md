@@ -159,6 +159,8 @@ To create first files for migrations use:
 ```bash
 goose -dir internal/db/migrations create add_users_table sql
 ```
+## JWT
+
 
 ## Swagger
 We use swaggo in this project
