@@ -1,0 +1,170 @@
+basePath: /api/v1
+definitions:
+  gocionics_internal_entities.Character:
+    description: Socionics character type with traits and description
+    properties:
+      description:
+        example: Искатель, интуитивно-логический экстраверт
+        type: string
+      id:
+        example: 1
+        type: integer
+      traits:
+        example:
+        - изобретательный
+        - энтузиаст
+        - непредсказуемый
+        items:
+          type: string
+        type: array
+      type:
+        example: Дон Кихот
+        type: string
+    type: object
+  gocionics_internal_entities.ErrorResponse:
+    description: Standard error response format
+    properties:
+      error:
+        example: error message
+        type: string
+    type: object
+  gocionics_internal_entities.SuccessResponse:
+    description: Standard success response format
+    properties:
+      status:
+        example: success
+        type: string
+    type: object
+  internal_controllers_auth.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  internal_controllers_auth.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        minLength: 8
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  internal_controllers_auth.LoginResponse:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API for Socionics Personality Typing
+  title: Gocionics API
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user
+      parameters:
+      - description: Credentials
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/internal_controllers_auth.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_controllers_auth.LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_controllers_auth.ErrorResponse'
+      summary: User login
+      tags:
+      - auth
+  /characters:
+    get:
+      description: Get list of all characters
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/gocionics_internal_entities.Character'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gocionics_internal_entities.ErrorResponse'
+      summary: Get all characters
+      tags:
+      - character
+  /characters/{id}:
+    get:
+      description: Get character details
+      parameters:
+      - description: Character ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/gocionics_internal_entities.Character'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gocionics_internal_entities.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gocionics_internal_entities.ErrorResponse'
+      summary: Get character by ID
+      tags:
+      - character
+  /users/{id}/characters/{character_id}:
+    post:
+      consumes:
+      - application/json
+      description: Assign character to user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Character ID
+        in: path
+        name: character_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/gocionics_internal_entities.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gocionics_internal_entities.ErrorResponse'
+      summary: Assign character to user
+      tags:
+      - user
+swagger: "2.0"

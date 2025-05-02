@@ -3,6 +3,8 @@
 // @description API for Socionics Personality Typing
 // @host localhost:8080
 // @BasePath /api/v1
+//
+//go:generate swag init -g cmd/api/v1/main.go --output docs/swagger
 package main
 
 import (
@@ -41,8 +43,8 @@ func main() {
 	defer pgDB.Close()
 
 	// Initialize repositories
-	userRepo := userrepo.NewPostgresRepository(pgDB)
-	charRepo := characterrepo.NewPostgresRepository(pgDB)
+	userRepo := userrepo.NewPostgresRepository(pgDB.DB)
+	charRepo := characterrepo.NewPostgresRepository(pgDB.DB)
 
 	// Initialize use cases
 	authUC := authusecase.NewAuthUseCase(userRepo)
@@ -58,9 +60,9 @@ func main() {
 	router := server.NewRouter()
 	api := router.Group("/api/v1")
 	{
-		auth.SetupRoutes(api, authController)
-		user.SetupRoutes(api, userController)
-		character.SetupRoutes(api, charController)
+		authcontroller.SetupRoutes(api, authController)
+		usercontroller.SetupRoutes(api, userController)
+		charactercontroller.SetupRoutes(api, charController)
 	}
 
 	// Create and run app

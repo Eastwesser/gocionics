@@ -2,7 +2,6 @@ package app
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/pressly/goose"
 	"go.uber.org/zap"
 	"gocionics/config"
 	"gocionics/internal/db"
@@ -24,6 +23,10 @@ func New(cfg *config.Config, router *gin.Engine) *App {
 	pgDB, err := db.NewPostgresDB(cfg)
 	if err != nil {
 		logger.Fatal("failed to connect to database", zap.Error(err))
+	}
+
+	if err := goose.SetDialect("postgres"); err != nil {
+		logger.Fatal("failed to set dialect", zap.Error(err))
 	}
 
 	if err := goose.Up(pgDB.DB, "internal/db/migrations"); err != nil {

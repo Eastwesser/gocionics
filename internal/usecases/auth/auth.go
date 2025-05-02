@@ -2,9 +2,10 @@ package auth
 
 import (
 	"errors"
-	"gocionics/internal/entities/user"
+	"gocionics/internal/entities"
 	user_repo "gocionics/internal/repositories/user"
 	"golang.org/x/crypto/bcrypt"
+	"time"
 )
 
 type AuthUseCase struct {
@@ -15,42 +16,37 @@ func NewAuthUseCase(userRepo user_repo.IUserRepository) *AuthUseCase {
 	return &AuthUseCase{userRepo: userRepo}
 }
 
-func (uc *AuthUseCase) Register(email, password string) (*user.User, error) {
-	// Проверяем, существует ли пользователь
+func (uc *AuthUseCase) Register(email, password string) (*entities.User, error) {
 	existingUser, err := uc.userRepo.GetByEmail(email)
 	if err == nil && existingUser != nil {
 		return nil, errors.New("user already exists")
 	}
 
-	// Хешируем пароль
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return nil, err
 	}
 
-	// Создаем пользователя
-	newUser := &user.User{
+	newUser := &entities.User{
 		Email:    email,
 		Password: string(hashedPassword),
 	}
 
-	userID, err := uc.userRepo.Create(newUser)
+	id, err := uc.userRepo.Create(newUser)
 	if err != nil {
 		return nil, err
 	}
 
-	newUser.ID = userID
+	newUser.ID = id
 	return newUser, nil
 }
 
-func (uc *AuthUseCase) Login(email, password string) (*user.User, error) {
-	// Находим пользователя
+func (uc *AuthUseCase) Login(email, password string) (*entities.User, error) {
 	user, err := uc.userRepo.GetByEmail(email)
 	if err != nil {
 		return nil, errors.New("invalid credentials")
 	}
 
-	// Проверяем пароль
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
 		return nil, errors.New("invalid credentials")
@@ -59,6 +55,26 @@ func (uc *AuthUseCase) Login(email, password string) (*user.User, error) {
 	return user, nil
 }
 
-func (uc *AuthUseCase) GetUserByID(id string) (*user.User, error) {
+func (uc *AuthUseCase) GetUserByID(id int) (*entities.User, error) {
 	return uc.userRepo.GetByID(id)
+}
+
+func (uc *AuthUseCase) GetUserByToken(token string) (*entities.User, error) {
+	// TODO: Реализовать логику проверки JWT токена
+	return nil, errors.New("not implemented")
+}
+
+func (uc *AuthUseCase) GenerateToken(user *entities.User) (string, error) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"user_id": user.ID,
+		"exp":     time.Now().Add(24 * time.Hour).Unix(),
+	})
+	return token.SignedString([]byte("your-secret-key"))
+}
+
+func (uc *AuthUseCase) GetUserByToken(tokenString string) (*entities.User, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		return []byte("your-secret-key"), nil
+	})
+	// ... verify token and get user
 }

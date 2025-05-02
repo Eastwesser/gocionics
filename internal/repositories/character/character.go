@@ -7,6 +7,11 @@ import (
 	"strings"
 )
 
+type ICharacterRepository interface {
+	GetByID(id int) (*character.Character, error)
+	ListAll() ([]*character.Character, error)
+}
+
 type PostgresRepository struct {
 	db *sql.DB
 }

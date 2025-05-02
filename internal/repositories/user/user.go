@@ -3,8 +3,15 @@ package user
 import (
 	"database/sql"
 	"errors"
-	"gocionics/internal/entities/user"
+	"gocionics/internal/entities"
 )
+
+type IUserRepository interface {
+	Create(user *entities.User) (string, error)
+	GetByID(id string) (*entities.User, error)
+	AssignCharacter(userID string, characterID int) error
+	GetByEmail(email string) (*entities.User, error)
+}
 
 type PostgresRepository struct {
 	db *sql.DB
@@ -14,28 +21,24 @@ func NewPostgresRepository(db *sql.DB) *PostgresRepository {
 	return &PostgresRepository{db: db}
 }
 
-func (r *PostgresRepository) Create(u *user.User) (string, error) {
+func (r *PostgresRepository) Create(u *entities.User) (int, error) {
 	query := `
 		INSERT INTO users (email, password_hash) 
 		VALUES ($1, $2) 
 		RETURNING id`
 
-	var id string
+	var id int
 	err := r.db.QueryRow(query, u.Email, u.Password).Scan(&id)
-	if err != nil {
-		return "", err
-	}
-
-	return id, nil
+	return id, err
 }
 
-func (r *PostgresRepository) GetByID(id string) (*user.User, error) {
+func (r *PostgresRepository) GetByID(id int) (*entities.User, error) {
 	query := `
 		SELECT id, email, password_hash, character_id 
 		FROM users 
 		WHERE id = $1`
 
-	var u user.User
+	var u entities.User
 	err := r.db.QueryRow(query, id).Scan(
 		&u.ID,
 		&u.Email,
@@ -53,7 +56,7 @@ func (r *PostgresRepository) GetByID(id string) (*user.User, error) {
 	return &u, nil
 }
 
-func (r *PostgresRepository) AssignCharacter(userID string, characterID int) error {
+func (r *PostgresRepository) AssignCharacter(userID int, characterID int) error {
 	query := `
 		UPDATE users 
 		SET character_id = $1 
@@ -63,13 +66,13 @@ func (r *PostgresRepository) AssignCharacter(userID string, characterID int) err
 	return err
 }
 
-func (r *PostgresRepository) GetByEmail(email string) (*user.User, error) {
+func (r *PostgresRepository) GetByEmail(email string) (*entities.User, error) {
 	query := `
 		SELECT id, email, password_hash 
 		FROM users 
 		WHERE email = $1`
 
-	var u user.User
+	var u entities.User
 	err := r.db.QueryRow(query, email).Scan(
 		&u.ID,
 		&u.Email,

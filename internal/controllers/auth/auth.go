@@ -10,10 +10,6 @@ type Controller struct {
 	authUC *auth.AuthUseCase
 }
 
-func NewAuthController(authUC *auth.AuthUseCase) *Controller {
-	return &Controller{authUC: authUC}
-}
-
 type RegisterRequest struct {
 	Email    string `json:"email" binding:"required,email"`
 	Password string `json:"password" binding:"required,min=8"`
@@ -22,6 +18,19 @@ type RegisterRequest struct {
 type LoginRequest struct {
 	Email    string `json:"email" binding:"required,email"`
 	Password string `json:"password" binding:"required,min=8"`
+}
+
+type LoginResponse struct {
+	ID    string `json:"id"`
+	Email string `json:"email"`
+}
+
+type ErrorResponse struct {
+	Error string `json:"error"`
+}
+
+func NewAuthController(authUC *auth.AuthUseCase) *Controller {
+	return &Controller{authUC: authUC}
 }
 
 func (c *Controller) Register(ctx *gin.Context) {

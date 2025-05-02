@@ -26,3 +26,7 @@ func (s *Server) Serve() error {
 func (s *Server) Stop(ctx context.Context) error {
 	return s.httpServer.Shutdown(ctx)
 }
+
+func NewRouter() *gin.Engine {
+	return gin.Default()
+}

@@ -156,6 +156,11 @@ Type to generate docs:
 swag init -g cmd/api/v1/main.go
 ```
 
+More acute way:
+```bash
+swag init -g cmd/api/v1/main.go --output docs/swagger --parseDependency --parseInternal
+```
+
 ## Docker
 
 Use this command to run server:

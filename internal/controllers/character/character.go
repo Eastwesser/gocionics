@@ -2,6 +2,7 @@ package character
 
 import (
 	"github.com/gin-gonic/gin"
+	"gocionics/internal/entities"
 	"gocionics/internal/usecases/character"
 	"net/http"
 	"strconv"
@@ -20,30 +21,38 @@ func NewCharacterController(charUC *character.CharacterUseCase) *Controller {
 // @Tags character
 // @Produce json
 // @Param id path int true "Character ID"
-// @Success 200 {object} Character
-// @Failure 404 {object} ErrorResponse
+// @Success 200 {object} entities.Character
+// @Failure 400 {object} entities.ErrorResponse
+// @Failure 404 {object} entities.ErrorResponse
 // @Router /characters/{id} [get]
 func (c *Controller) GetCharacter(ctx *gin.Context) {
 	idStr := ctx.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid character ID"})
+		ctx.JSON(http.StatusBadRequest, entities.ErrorResponse{Error: "invalid character ID"})
 		return
 	}
 
 	char, err := c.charUC.GetByID(id)
 	if err != nil {
-		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusNotFound, entities.ErrorResponse{Error: err.Error()})
 		return
 	}
 
 	ctx.JSON(http.StatusOK, char)
 }
 
+// @Summary Get all characters
+// @Description Get list of all available character types
+// @Tags character
+// @Produce json
+// @Success 200 {array} entities.Character
+// @Failure 500 {object} entities.ErrorResponse
+// @Router /characters [get]
 func (c *Controller) ListCharacters(ctx *gin.Context) {
 	characters, err := c.charUC.ListAll()
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusInternalServerError, entities.ErrorResponse{Error: err.Error()})
 		return
 	}
 
