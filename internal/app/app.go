@@ -84,4 +84,5 @@ func New(cfg *config.Config, router *gin.Engine) *App {
 		Server: server.New(":"+cfg.Port, router),
 		DB:     pgDB,
 	}
+
 }
