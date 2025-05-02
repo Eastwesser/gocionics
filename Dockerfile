@@ -9,11 +9,14 @@ RUN make build
 
 FROM alpine:3.19
 WORKDIR /app
-# Добавляем make и зависимости для goose
-RUN apk add --no-cache postgresql-client
+# Устанавливаем зависимости
+RUN apk add --no-cache postgresql-client bash
+# Копируем файлы
 COPY --from=builder /app/gocionics .
-COPY --from=builder /app/internal/db/migrations ./migrations
+COPY --from=builder /app/internal/db/migrations ./internal/db/migrations
 COPY --from=builder /go/bin/goose /usr/local/bin/goose
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-# Заменяем make на прямой вызов goose и приложения
-CMD ["sh", "-c", "goose -dir ./migrations postgres \"user=postgres password=postgres dbname=library host=db port=5432 sslmode=disable\" up && ./gocionics"]
+# Только один CMD!
+CMD ["/entrypoint.sh"]

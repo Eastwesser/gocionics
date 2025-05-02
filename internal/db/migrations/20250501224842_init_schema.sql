@@ -1,6 +1,6 @@
 -- +goose Up
 -- +goose StatementBegin
-CREATE TABLE users
+CREATE TABLE IF NOT EXISTS users
 (
     id            SERIAL PRIMARY KEY,
     email         TEXT UNIQUE NOT NULL,
@@ -9,18 +9,18 @@ CREATE TABLE users
     updated_at    TIMESTAMP DEFAULT NOW()
 );
 
-CREATE TABLE characters
+CREATE TABLE IF NOT EXISTS characters
 (
     id          SERIAL PRIMARY KEY,
-    type        VARCHAR(50) NOT NULL,
+    type        VARCHAR(50) UNIQUE NOT NULL,
     description TEXT,
     traits      TEXT[]
 );
 
-CREATE TABLE user_characters
+CREATE TABLE IF NOT EXISTS user_characters
 (
-    user_id      INT REFERENCES users (id),
-    character_id INT REFERENCES characters (id),
+    user_id      INT REFERENCES users (id) ON DELETE CASCADE,
+    character_id INT REFERENCES characters (id) ON DELETE CASCADE,
     PRIMARY KEY (user_id, character_id)
 );
 -- +goose StatementEnd

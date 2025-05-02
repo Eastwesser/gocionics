@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/pressly/goose"
 	"go.uber.org/zap"
@@ -8,6 +9,7 @@ import (
 	"gocionics/internal/db"
 	"gocionics/internal/server"
 	"log"
+	"time"
 
 	authcontroller "gocionics/internal/controllers/auth"
 	charactercontroller "gocionics/internal/controllers/character"
@@ -37,11 +39,28 @@ func New(cfg *config.Config, router *gin.Engine) *App {
 		logger.Fatal("failed to connect to database", zap.Error(err))
 	}
 
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	if err := pgDB.DB.PingContext(ctx); err != nil {
+		logger.Fatal("Database connection failed", zap.Error(err))
+	}
+
+	// Ждем пока таблицы станут доступны
+	for i := 0; i < 10; i++ {
+		_, err := pgDB.DB.ExecContext(ctx, "SELECT 1 FROM users LIMIT 1")
+		if err == nil {
+			break
+		}
+		logger.Info("Waiting for tables to be ready...")
+		time.Sleep(1 * time.Second)
+	}
+
 	// 2. Миграции
 	if err := goose.SetDialect("postgres"); err != nil {
 		logger.Fatal("failed to set dialect", zap.Error(err))
 	}
-	if err := goose.Up(pgDB.DB, "internal/db/migrations"); err != nil {
+	if err := goose.Up(pgDB.DB, "./internal/db/migrations"); err != nil {
 		logger.Fatal("failed to apply migrations", zap.Error(err))
 	}
 
@@ -58,13 +77,6 @@ func New(cfg *config.Config, router *gin.Engine) *App {
 	charController := charactercontroller.NewCharacterController(charUC)
 
 	// 4. Настройка роутинга
-	api := router.Group("/api/v1")
-	{
-		authcontroller.SetupRoutes(api, authController)
-		usercontroller.SetupRoutes(api, userController)
-		charactercontroller.SetupRoutes(api, charController)
-	}
-
 	server.SetupRoutes(router, authController, userController, charController)
 
 	return &App{
