@@ -23,6 +23,7 @@ import (
 )
 
 func main() {
+
 	cfg := config.NewConfig()
 	// Создаем роутер с Swagger
 	router := server.NewRouter()
