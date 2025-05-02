@@ -12,6 +12,7 @@ type PostgresDB struct {
 }
 
 func NewPostgresDB(cfg *config.Config) (*PostgresDB, error) {
+
 	connStr := fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		cfg.DbHost,
@@ -26,12 +27,10 @@ func NewPostgresDB(cfg *config.Config) (*PostgresDB, error) {
 		return nil, err
 	}
 
-	// Регистрируем драйвер для работы с массивами
 	if err = db.Ping(); err != nil {
 		return nil, err
 	}
 
-	// Логгирование
 	db.SetConnMaxLifetime(time.Minute * 3)
 	db.SetMaxOpenConns(10)
 	db.SetMaxIdleConns(10)
