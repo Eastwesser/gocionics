@@ -1,6 +1,7 @@
 package db
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"gocionics/config"
@@ -12,7 +13,6 @@ type PostgresDB struct {
 }
 
 func NewPostgresDB(cfg *config.Config) (*PostgresDB, error) {
-
 	connStr := fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		cfg.DbHost,
@@ -27,13 +27,19 @@ func NewPostgresDB(cfg *config.Config) (*PostgresDB, error) {
 		return nil, err
 	}
 
-	if err = db.Ping(); err != nil {
-		return nil, err
-	}
+	// Настройки пула соединений с таймаутами
+	db.SetConnMaxLifetime(3 * time.Minute)
+	db.SetMaxOpenConns(25)
+	db.SetMaxIdleConns(25)
+	db.SetConnMaxIdleTime(1 * time.Minute)
 
-	db.SetConnMaxLifetime(time.Minute * 3)
-	db.SetMaxOpenConns(10)
-	db.SetMaxIdleConns(10)
+	// Проверка соединения с таймаутом
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	if err := db.PingContext(ctx); err != nil {
+		return nil, fmt.Errorf("database ping failed: %w", err)
+	}
 
 	return &PostgresDB{DB: db}, nil
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"time"
 )
 
 type Server struct {
@@ -13,8 +14,12 @@ type Server struct {
 func New(addr string, handler *gin.Engine) *Server {
 	return &Server{
 		httpServer: &http.Server{
-			Addr:    addr,
-			Handler: handler,
+			Addr:              addr,
+			Handler:           handler,
+			ReadTimeout:       10 * time.Second,
+			ReadHeaderTimeout: 5 * time.Second,
+			WriteTimeout:      15 * time.Second,
+			IdleTimeout:       30 * time.Second,
 		},
 	}
 }

@@ -65,6 +65,8 @@ func New(cfg *config.Config, router *gin.Engine) *App {
 		charactercontroller.SetupRoutes(api, charController)
 	}
 
+	server.SetupRoutes(router, authController, userController, charController)
+
 	return &App{
 		Config: cfg,
 		Server: server.New(":"+cfg.Port, router),

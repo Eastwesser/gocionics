@@ -10,10 +10,14 @@ services:
       - DB_PASSWORD=postgres
       - DB_NAME=library
       - SERVER_PORT=8080
+      - GIN_MODE=release
     depends_on:
       - db
-    volumes:
-      - .:/app
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
 
   db:
     image: postgres:13
@@ -25,6 +29,16 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
 
 volumes:
   postgres_data:
