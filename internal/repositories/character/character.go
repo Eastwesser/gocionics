@@ -4,13 +4,13 @@ import (
 	"database/sql"
 	"errors"
 	"github.com/lib/pq"
-	"gocionics/internal/entities/character"
+	"gocionics/internal/entities"
 	"strings"
 )
 
 type ICharacterRepository interface {
-	GetByID(id int) (*character.Character, error)
-	ListAll() ([]*character.Character, error)
+	GetByID(id int) (*entities.Character, error)
+	ListAll() ([]*entities.Character, error)
 }
 
 type PostgresRepository struct {
@@ -21,9 +21,11 @@ func NewPostgresRepository(db *sql.DB) *PostgresRepository {
 	return &PostgresRepository{db: db}
 }
 
-func (r *PostgresRepository) GetByID(id int) (*character.Character, error) {
+func (r *PostgresRepository) GetByID(id int) (*entities.Character, error) {
+
 	query := `SELECT id, type, description, traits FROM characters WHERE id = $1`
-	var c character.Character
+
+	var c entities.Character
 	err := r.db.QueryRow(query, id).Scan(
 		&c.ID,
 		&c.Type,
@@ -38,11 +40,10 @@ func (r *PostgresRepository) GetByID(id int) (*character.Character, error) {
 		return nil, err
 	}
 
-	c.Traits = strings.Split(traitsStr, ",")
 	return &c, nil
 }
 
-func (r *PostgresRepository) ListAll() ([]*character.Character, error) {
+func (r *PostgresRepository) ListAll() ([]*entities.Character, error) {
 	query := `
 		SELECT id, type, description, traits 
 		FROM characters`
@@ -53,9 +54,9 @@ func (r *PostgresRepository) ListAll() ([]*character.Character, error) {
 	}
 	defer rows.Close()
 
-	var characters []*character.Character
+	var characters []*entities.Character
 	for rows.Next() {
-		var c character.Character
+		var c entities.Character
 		var traitsStr string
 
 		if err := rows.Scan(

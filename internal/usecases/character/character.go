@@ -2,7 +2,7 @@ package character
 
 import (
 	"errors"
-	"gocionics/internal/entities/character"
+	"gocionics/internal/entities"
 	char_repo "gocionics/internal/repositories/character"
 )
 
@@ -14,15 +14,15 @@ func NewCharacterUseCase(repo char_repo.ICharacterRepository) *CharacterUseCase 
 	return &CharacterUseCase{repo: repo}
 }
 
-func (uc *CharacterUseCase) GetByID(id int) (*character.Character, error) {
+func (uc *CharacterUseCase) GetByID(id int) (*entities.Character, error) {
 	return uc.repo.GetByID(id)
 }
 
-func (uc *CharacterUseCase) ListAll() ([]*character.Character, error) {
+func (uc *CharacterUseCase) ListAll() ([]*entities.Character, error) {
 	return uc.repo.ListAll()
 }
 
-func (uc *CharacterUseCase) AnalyzeAnswers(answers []int) (*character.Character, error) {
+func (uc *CharacterUseCase) AnalyzeAnswers(answers []int) (*entities.Character, error) {
 	if len(answers) == 0 {
 		return nil, errors.New("no answers provided")
 	}

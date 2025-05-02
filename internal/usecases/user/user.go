@@ -2,7 +2,7 @@ package user
 
 import (
 	"errors"
-	"gocionics/internal/entities/character"
+	"gocionics/internal/entities"
 	char_repo "gocionics/internal/repositories/character"
 	user_repo "gocionics/internal/repositories/user"
 )
@@ -30,7 +30,7 @@ func (uc *UserUseCase) AssignCharacter(userID int, characterID int) error {
 	return uc.userRepo.AssignCharacter(userID, characterID)
 }
 
-func (uc *UserUseCase) GetUserCharacter(userID int) (*character.Character, error) {
+func (uc *UserUseCase) GetUserCharacter(userID int) (*entities.Character, error) {
 	user, err := uc.userRepo.GetByID(userID)
 	if err != nil {
 		return nil, err
