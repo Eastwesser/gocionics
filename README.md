@@ -185,6 +185,23 @@ Also check migrations:
 docker-compose exec app goose -dir ./migrations postgres "user=postgres password=postgres dbname=library host=db port=5432 sslmode=disable" status
 ```
 
+## Makefiles
+
+```
+Как использовать Makefile?
+Основные команды:
+Команда	Действие
+make build	Собирает бинарник (gocionics)
+make run	Запускает сервер через go run
+make test	Запускает все тесты (go test ./...)
+make lint	Проверяет код через golangci-lint (нужно установить)
+make migrate-up	Применяет миграции (goose up)
+make migrate-down	Откатывает миграции (goose down)
+make docker-build	Собирает Docker-образ
+make docker-run	Запускает контейнер (docker run)
+make clean	Удаляет скомпилированный бинарник
+```
+
 ## Final steps
 
 Open your browser and enter **http://localhost:8080/swagger/index.html**
