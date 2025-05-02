@@ -8,12 +8,12 @@ import (
 )
 
 type Config struct {
-	Port        string
-	DB_password string
-	DB_user     string
-	DB_name     string
-	DB_port     string
-	DB_host     string
+	Port       string
+	DbPassword string
+	DbUser     string
+	DbName     string
+	DbPort     string
+	DbHost     string
 }
 
 func NewConfig() *Config {
@@ -24,12 +24,12 @@ func NewConfig() *Config {
 	}
 
 	return &Config{
-		Port:        getEnv("PORT", "8080"),
-		DB_password: getEnv("DB_PASSWORD", "postgres"),
-		DB_user:     getEnv("DB_USER", "postgres"),
-		DB_name:     getEnv("DB_NAME", "postgres"),
-		DB_port:     getEnv("DB_PORT", "5432"),
-		DB_host:     getEnv("DB_HOST", "db"),
+		Port:       getEnv("PORT", "8080"),
+		DbPassword: getEnv("DB_PASSWORD", "postgres"),
+		DbUser:     getEnv("DB_USER", "postgres"),
+		DbName:     getEnv("DB_NAME", "postgres"),
+		DbPort:     getEnv("DB_PORT", "5432"),
+		DbHost:     getEnv("DB_HOST", "db"),
 	}
 
 }
