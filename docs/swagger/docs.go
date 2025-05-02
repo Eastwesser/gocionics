@@ -35,7 +35,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/auth.LoginRequest"
+                            "$ref": "#/definitions/internal_controllers_auth.LoginRequest"
                         }
                     }
                 ],
@@ -43,13 +43,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/auth.LoginResponse"
+                            "$ref": "#/definitions/internal_controllers_auth.LoginResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/auth.ErrorResponse"
+                            "$ref": "#/definitions/internal_controllers_auth.ErrorResponse"
                         }
                     }
                 }
@@ -71,14 +71,14 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/entities.Character"
+                                "$ref": "#/definitions/gocionics_internal_entities.Character"
                             }
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/gocionics_internal_entities.ErrorResponse"
                         }
                     }
                 }
@@ -107,19 +107,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entities.Character"
+                            "$ref": "#/definitions/gocionics_internal_entities.Character"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/gocionics_internal_entities.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/gocionics_internal_entities.ErrorResponse"
                         }
                     }
                 }
@@ -158,13 +158,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entities.SuccessResponse"
+                            "$ref": "#/definitions/gocionics_internal_entities.SuccessResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/gocionics_internal_entities.ErrorResponse"
                         }
                     }
                 }
@@ -172,42 +172,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "auth.ErrorResponse": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string"
-                }
-            }
-        },
-        "auth.LoginRequest": {
-            "type": "object",
-            "required": [
-                "email",
-                "password"
-            ],
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string",
-                    "minLength": 8
-                }
-            }
-        },
-        "auth.LoginResponse": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "entities.Character": {
+        "gocionics_internal_entities.Character": {
             "description": "Socionics character type with traits and description",
             "type": "object",
             "properties": {
@@ -236,7 +201,7 @@ const docTemplate = `{
                 }
             }
         },
-        "entities.ErrorResponse": {
+        "gocionics_internal_entities.ErrorResponse": {
             "description": "Standard error response format",
             "type": "object",
             "properties": {
@@ -246,13 +211,48 @@ const docTemplate = `{
                 }
             }
         },
-        "entities.SuccessResponse": {
+        "gocionics_internal_entities.SuccessResponse": {
             "description": "Standard success response format",
             "type": "object",
             "properties": {
                 "status": {
                     "type": "string",
                     "example": "success"
+                }
+            }
+        },
+        "internal_controllers_auth.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_controllers_auth.LoginRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 8
+                }
+            }
+        },
+        "internal_controllers_auth.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
                 }
             }
         }

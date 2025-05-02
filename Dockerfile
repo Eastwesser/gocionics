@@ -2,28 +2,22 @@ FROM golang:1.23-alpine AS builder
 WORKDIR /app
 RUN apk add --no-cache make git
 
-# Критически важные переменные окружения
-ENV GOPATH=/go
-ENV GO111MODULE=on
-ENV CGO_ENABLED=0
+# Установка зависимостей
+RUN go install github.com/pressly/goose/v3/cmd/goose@latest && \
+    go install github.com/swaggo/swag/cmd/swag@latest
 
-# Установка утилит
-RUN go install github.com/pressly/goose/v3/cmd/goose@latest
-RUN go install github.com/swaggo/swag/cmd/swag@latest
-
-# Копирование и загрузка зависимостей
+# Копируем только файлы модуля сначала
 COPY go.mod go.sum ./
 RUN go mod download
 
-# Копирование исходного кода
+# Копируем весь код
 COPY . .
 
-# Генерация документации Swagger
-RUN swag init -g cmd/api/v1/main.go --output docs/swagger
+# Генерируем документацию с явным указанием модуля
+RUN swag init -g cmd/api/v1/main.go --output docs/swagger --parseDependency --parseInternal --dir ./
 
-# Диагностика и сборка
-RUN go list -m  # Показывает используемый модуль
-RUN make build
+# Собираем приложение
+RUN CGO_ENABLED=0 GOOS=linux go build -o gocionics ./cmd/api/v1
 
 FROM alpine:3.19
 WORKDIR /app
