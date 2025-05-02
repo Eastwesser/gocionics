@@ -7,9 +7,9 @@ import (
 )
 
 type IUserRepository interface {
-	Create(user *entities.User) (string, error)
-	GetByID(id string) (*entities.User, error)
-	AssignCharacter(userID string, characterID int) error
+	Create(user *entities.User) (int, error)           // int вместо string
+	GetByID(id int) (*entities.User, error)            // int вместо string
+	AssignCharacter(userID int, characterID int) error // int вместо string
 	GetByEmail(email string) (*entities.User, error)
 }
 

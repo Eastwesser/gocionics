@@ -59,9 +59,21 @@ func (uc *AuthUseCase) GetUserByID(id int) (*entities.User, error) {
 	return uc.userRepo.GetByID(id)
 }
 
-func (uc *AuthUseCase) GetUserByToken(token string) (*entities.User, error) {
-	// TODO: Реализовать логику проверки JWT токена
-	return nil, errors.New("not implemented")
+func (uc *AuthUseCase) GetUserByToken(tokenString string) (*entities.User, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		return []byte("your-secret-key"), nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		userID := int(claims["user_id"].(float64))
+		return uc.userRepo.GetByID(userID)
+	}
+
+	return nil, errors.New("invalid token")
 }
 
 func (uc *AuthUseCase) GenerateToken(user *entities.User) (string, error) {
@@ -70,11 +82,4 @@ func (uc *AuthUseCase) GenerateToken(user *entities.User) (string, error) {
 		"exp":     time.Now().Add(24 * time.Hour).Unix(),
 	})
 	return token.SignedString([]byte("your-secret-key"))
-}
-
-func (uc *AuthUseCase) GetUserByToken(tokenString string) (*entities.User, error) {
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return []byte("your-secret-key"), nil
-	})
-	// ... verify token and get user
 }

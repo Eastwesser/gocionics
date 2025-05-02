@@ -23,11 +23,16 @@ func (uc *CharacterUseCase) ListAll() ([]*character.Character, error) {
 }
 
 func (uc *CharacterUseCase) AnalyzeAnswers(answers []int) (*character.Character, error) {
-	// Здесь должна быть логика анализа ответов на тест
-	// Пока возвращаем первый попавшийся характер
+	if len(answers) == 0 {
+		return nil, errors.New("no answers provided")
+	}
+
+	// Простейшая логика - выбираем тип по количеству ответов
 	characters, err := uc.repo.ListAll()
 	if err != nil || len(characters) == 0 {
 		return nil, errors.New("no characters available")
 	}
-	return characters[0], nil
+
+	index := len(answers) % len(characters)
+	return characters[index], nil
 }

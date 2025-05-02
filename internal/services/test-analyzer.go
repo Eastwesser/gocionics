@@ -1,9 +1,11 @@
 package services
 
-func AnalyzeType(answers []int) (*Character, error) {
+import "gocionics/internal/entities"
+
+func AnalyzeType(answers []int) (*entities.Character, error) {
 	// TODO: Реализовать логику анализа ответов
 	// Временная заглушка:
-	return &Character{
+	return &entities.Character{
 		ID:          1,
 		Type:        "Дон Кихот",
 		Description: "Искатель, интуитивно-логический экстраверт",

@@ -3,6 +3,7 @@ package character
 import (
 	"database/sql"
 	"errors"
+	"github.com/lib/pq"
 	"gocionics/internal/entities/character"
 	"strings"
 )
@@ -21,19 +22,13 @@ func NewPostgresRepository(db *sql.DB) *PostgresRepository {
 }
 
 func (r *PostgresRepository) GetByID(id int) (*character.Character, error) {
-	query := `
-		SELECT id, type, description, traits 
-		FROM characters 
-		WHERE id = $1`
-
+	query := `SELECT id, type, description, traits FROM characters WHERE id = $1`
 	var c character.Character
-	var traitsStr string
-
 	err := r.db.QueryRow(query, id).Scan(
 		&c.ID,
 		&c.Type,
 		&c.Description,
-		&traitsStr,
+		pq.Array(&c.Traits),
 	)
 
 	if errors.Is(err, sql.ErrNoRows) {

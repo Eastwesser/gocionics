@@ -1,1 +1,0 @@
-Here we have the additional logic for analyzing user's type

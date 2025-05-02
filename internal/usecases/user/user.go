@@ -19,7 +19,7 @@ func NewUserUseCase(userRepo user_repo.IUserRepository, charRepo char_repo.IChar
 	}
 }
 
-func (uc *UserUseCase) AssignCharacter(userID string, characterID int) error {
+func (uc *UserUseCase) AssignCharacter(userID int, characterID int) error {
 	// Проверяем существование характера
 	_, err := uc.charRepo.GetByID(characterID)
 	if err != nil {
@@ -30,7 +30,7 @@ func (uc *UserUseCase) AssignCharacter(userID string, characterID int) error {
 	return uc.userRepo.AssignCharacter(userID, characterID)
 }
 
-func (uc *UserUseCase) GetUserCharacter(userID string) (*character.Character, error) {
+func (uc *UserUseCase) GetUserCharacter(userID int) (*character.Character, error) {
 	user, err := uc.userRepo.GetByID(userID)
 	if err != nil {
 		return nil, err

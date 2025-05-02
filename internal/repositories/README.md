@@ -1,1 +1,0 @@
-Here we have the interfaces for db (User, Character)
