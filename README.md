@@ -138,10 +138,22 @@ Outer layers (DB, HTTP) depend on inner layers.
     Working with socionic types (character).
 
 ## SQL Migrations
+
 We are using **goose** for db migrations:
 ```bash
 go install github.com/pressly/goose/v3/cmd/goose@latest
 ```
+
+Add to go.mod:
+```bash
+go get github.com/pressly/goose/v3
+```
+
+Check version:
+```bash
+goose -version
+```
+
 
 To create first files for migrations use:
 ```bash

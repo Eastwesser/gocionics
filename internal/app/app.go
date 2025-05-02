@@ -22,6 +22,7 @@ import (
 type App struct {
 	Config *config.Config
 	Server *server.Server
+	DB     *db.PostgresDB
 }
 
 func New(cfg *config.Config, router *gin.Engine) *App {
@@ -67,5 +68,6 @@ func New(cfg *config.Config, router *gin.Engine) *App {
 	return &App{
 		Config: cfg,
 		Server: server.New(":"+cfg.Port, router),
+		DB:     pgDB,
 	}
 }
