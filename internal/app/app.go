@@ -47,7 +47,7 @@ func New(cfg *config.Config, router *gin.Engine) *App {
 	}
 
 	// Ждем пока таблицы станут доступны
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 100; i++ {
 		_, err := pgDB.DB.ExecContext(ctx, "SELECT 1 FROM users LIMIT 1")
 		if err == nil {
 			break
